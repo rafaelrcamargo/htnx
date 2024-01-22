@@ -30,7 +30,7 @@ export default function Home() {
             {">"}
           </span>
           ht
-          <NextLogo className="-z-10 -mx-2 mt-1 h-14 w-14 lg:-mx-4 lg:h-28 lg:w-28" />
+          <NextLogo className="-z-10 -mx-2 mt-1 h-14 w-14 lg:-mx-4 lg:mt-4 lg:h-28 lg:w-28" />
           x
         </h1>
       </Link>
