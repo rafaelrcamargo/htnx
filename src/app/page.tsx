@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <main className="relative flex h-full flex-col items-center justify-center px-4 py-20 text-2xl font-medium lg:px-16 lg:py-32">
       <Link target="_blank" href="https://github.com/rafaelrcamargo/htnx">
-        <h1 className="inline-flex items-center pb-24 text-5xl font-extrabold hover:dark:dark:[filter:drop-shadow(0_0_128px_#666)] duration-150 text-zinc-500 drop-shadow-md lg:pb-36 lg:text-8xl dark:text-zinc-50 dark:[filter:drop-shadow(0_0_64px_#6666)]">
+        <h1 className="inline-flex items-center pb-24 text-5xl font-extrabold text-zinc-500 drop-shadow-md duration-150 lg:pb-36 lg:text-8xl dark:text-zinc-50 dark:[filter:drop-shadow(0_0_64px_#6666)] hover:dark:dark:[filter:drop-shadow(0_0_128px_#666)]">
           <span className="mr-4 text-4xl lg:mr-8 lg:text-7xl">
             {"<"}
             <span className="text-black dark:text-zinc-700">{"/"}</span>
