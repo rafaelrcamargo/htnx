@@ -21,6 +21,8 @@ const config: Config = {
       }
     }
   },
-  plugins: []
+  plugins: [],
+  experimental: { optimizeUniversalDefaults: true },
+  future: { hoverOnlyWhenSupported: true }
 }
 export default config

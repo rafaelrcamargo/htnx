@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .overlay {
+    position: fixed;
+    inset: 0;
+
+    opacity: 0.1;
+    width: 100%;
+
+    background-image: url(/noise.png);
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-size: 256px;
+
+    mix-blend-mode: overlay;
+    user-select: none;
+  }
+}
+
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn cubic-bezier(0.165, 0.84, 0.44, 1) 0.5s forwards;

@@ -8,7 +8,7 @@ export const Spinner = ({ className, ...props }: ComponentProps<"svg">) => (
     height={44}
     stroke="rgb(51, 65, 85)"
     className={cn(
-      "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform",
+      "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform stroke-slate-700 dark:stroke-zinc-500",
       className
     )}
     {...props}>
@@ -63,9 +63,8 @@ export const Spinner = ({ className, ...props }: ComponentProps<"svg">) => (
 
 export const NextLogo = (props: ComponentProps<"svg">) => (
   <svg
-    aria-label="Next.js logomark"
-    className="next-mark_root__iLw9v"
     data-theme="light"
+    aria-label="Next.js logomark"
     viewBox="0 0 180 180"
     {...props}>
     <mask

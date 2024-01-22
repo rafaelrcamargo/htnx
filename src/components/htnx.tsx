@@ -19,6 +19,10 @@ type Trigger<T> = T extends "form" ? "submit" | TriggerBase : TriggerBase
 
 type Event<T> = T extends "form" ? FormData : SyntheticEvent
 
+/**
+ * TODO: Think about a prefix for the props, so they wont conflict with the HTML props
+ * - Could be something like `HnAction` or `HNAction`
+ */
 type Props<T extends keyof ReactHTML> = Omit<
   ComponentProps<T>,
   "action" | "target"

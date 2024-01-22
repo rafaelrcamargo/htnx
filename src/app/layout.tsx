@@ -14,9 +14,11 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
         className={cn(
           GeistSans.variable,
           GeistMono.variable,
-          "min-w-screen min-h-dvh bg-slate-50 font-sans text-slate-500 antialiased"
+          "min-w-screen min-h-dvh bg-slate-50 font-sans text-slate-500 antialiased dark:bg-zinc-900 dark:text-zinc-200"
         )}>
         {children}
+
+        <div className="overlay pointer-events-none z-20" />
       </body>
     </html>
   )
