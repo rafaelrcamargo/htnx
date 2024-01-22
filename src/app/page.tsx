@@ -1,63 +1,82 @@
 "use client"
 
-import {
-  ComponentProps,
-  FC,
-  PropsWithChildren,
-  RefObject,
-  useRef,
-  useState,
-  useTransition
-} from "react"
+import { FC, PropsWithChildren, useRef } from "react"
 
-import { renderToStaticMarkup } from "react-dom/server"
-import { toast } from "sonner"
-
-import { random } from "@/app/server"
+import { cn } from "@/lib/utils"
+import { HTNX } from "@/components/htnx"
+import { NextLogo, Spinner } from "@/components/svg"
+import { like, random, save } from "@/app/server"
 
 const BASE_BUTTON =
-  "h-16 w-64 rounded-xl border-2 border-slate-300 py-4 shadow-[inset_0_-3px_0px_rgba(203,213,225,.3),0_2px_2px_rgba(203,213,225,0.2)] duration-75 hover:shadow-[inset_0_-3px_0_rgba(203,213,225,.4),0_0_8px_rgba(203,213,225,0.5)] active:enabled:bg-[#F5F8FB] bg-slate-50 active:enabled:shadow-[inset_2px_3px_0_rgba(203,213,225,.3),inset_-1px_-1px_2px_rgba(203,213,225,.5)] disabled:cursor-wait disabled:opacity-50"
+  "h-16 w-64 rounded-xl border-2 border-slate-300 py-4 active:text-slate-400 shadow-[inset_0_-3px_0px_rgba(203,213,225,.3),0_2px_2px_rgba(203,213,225,0.2)] duration-75 hover:shadow-[inset_0_-3px_0_rgba(203,213,225,.4),0_0_8px_rgba(203,213,225,0.5)] active:enabled:bg-[#F5F8FB] bg-slate-50 active:enabled:shadow-[inset_2px_3px_0_rgba(203,213,225,.3),inset_-1px_-1px_2px_rgba(203,213,225,.5)] disabled:cursor-wait disabled:opacity-50"
 
 export default function Home() {
   const innerRef = useRef(null)
-  const outerRef = useRef(null)
 
   return (
-    <main className="flex h-full flex-col items-center justify-center px-4 py-32 text-2xl font-medium md:px-16">
-      <h1 className="pb-32 text-4xl font-black text-slate-700">
-        HTNX: <i className="font-medium">Why not?</i>
+    <main className="relative flex h-full flex-col items-center justify-center px-4 py-20 text-2xl font-medium lg:px-16 lg:py-32">
+      <h1 className="inline-flex items-center pb-16 text-5xl font-extrabold text-zinc-500 drop-shadow-md lg:pb-32 lg:text-8xl">
+        <span className="mr-4 text-4xl lg:mr-8 lg:text-7xl">
+          {"<"}
+          <span className="text-black">{"/"}</span>
+          {">"}
+        </span>
+        ht
+        <NextLogo className="-z-10 -mx-2 mt-1 h-14 w-14 lg:-mx-4 lg:h-28 lg:w-28" />
+        x
       </h1>
 
-      <section className="grid-cols-footer grid w-full gap-16">
-        <Section title="Swap outerHTML">
-          <HTNX.Button
-            action={random}
-            trigger={"click"}
+      <section className="flex w-full flex-col gap-16 font-mono lg:grid lg:grid-cols-display">
+        {/* First Line */}
+        <Section title="Swap outerHTML" className="col-span-2">
+          <HTNX
+            element="button"
+            action={async () => await random()}
+            trigger="click"
             swap="outerHTML"
             className={BASE_BUTTON}>
             Click me!
-          </HTNX.Button>
+          </HTNX>
         </Section>
-
         <Section title="Swap innerHTML">
-          <HTNX.Button
-            action={random}
-            trigger={"click"}
+          <HTNX
+            element="button"
+            action={async () => await like()}
+            trigger="click"
             swap="innerHTML"
-            className={BASE_BUTTON}>
-            Click me!
-          </HTNX.Button>
+            indicator={<Heart className="animate-fade-out" />}
+            className={cn(
+              BASE_BUTTON,
+              "grid h-16 w-16 place-content-center overflow-hidden p-0"
+            )}>
+            <Heart />
+          </HTNX>
         </Section>
 
-        <Section title="Target from Ref + swap innerHTML">
-          <HTNX.Button
-            action={random}
-            trigger={"click"}
+        {/* Second Line */}
+        <Section title="Swap outerHTML on mouseenter">
+          <HTNX
+            element="button"
+            action={async () => await random()}
+            swap="outerHTML"
+            trigger="mouseenter"
+            className="w-64 rounded-xl border-4 border-dashed border-slate-300 py-[0.88rem] text-center text-xl">
+            I&apos;ll change once!
+          </HTNX>
+        </Section>
+
+        <Section
+          title="Swap innerHTML from target"
+          className="col-span-2 flex-wrap">
+          <HTNX
+            element="button"
+            action={async () => await random()}
+            trigger="click"
             target={innerRef}
             swap="innerHTML"
             className={BASE_BUTTON}>
             Click me!
-          </HTNX.Button>
+          </HTNX>
 
           <h2
             className="w-64 rounded-xl border-4 border-dashed border-slate-300 py-[0.88rem] text-center text-xl"
@@ -66,207 +85,171 @@ export default function Home() {
           </h2>
         </Section>
 
-        <Section title="Target from Ref + swap outerHTML">
-          <HTNX.Button
-            action={random}
-            trigger={"click"}
-            target={outerRef}
-            swap="outerHTML"
-            className={BASE_BUTTON}>
-            Click me!
-          </HTNX.Button>
-
-          <h2
-            className="w-64 rounded-xl border-4 border-dashed border-slate-300 py-[0.88rem] text-center text-xl"
-            ref={outerRef}>
-            And I&apos;ll change!
-          </h2>
-        </Section>
-
-        <Section title="Swap innerHTML + basic indicator">
-          <HTNX.Button
-            action={async () => await random(true)}
-            trigger={"click"}
+        {/* Third Line */}
+        <Section title="Swap innerHTML + indicator">
+          <HTNX
+            element="button"
+            action={async () => await random({ throttle: true })}
+            trigger="click"
             swap="innerHTML"
-            indicator={"Loading..."}
+            indicator="Loading..."
             className={BASE_BUTTON}>
             Click me!
-          </HTNX.Button>
+          </HTNX>
         </Section>
-
-        <Section title="Swap innerHTML + custom indicator">
-          <HTNX.Button
-            action={async () => await random(true)}
-            trigger={"click"}
+        <Section title="Swap innerHTML + loader">
+          <HTNX
+            element="button"
+            trigger="click"
             swap="innerHTML"
             indicator={<Spinner />}
-            className={`relative ${BASE_BUTTON}`}>
+            action={async () => await random({ throttle: true })}
+            className={cn(BASE_BUTTON, "relative")}>
             Click me!
-          </HTNX.Button>
+          </HTNX>
+        </Section>
+        <Section title="Swap innerHTML on mouseenter">
+          <HTNX
+            element="button"
+            action={async () => await random()}
+            swap="innerHTML"
+            trigger="mouseenter"
+            className="w-64 rounded-xl border-4 border-dashed border-slate-300 py-[0.88rem] text-center text-xl">
+            I&apos;ll keep changing!
+          </HTNX>
+        </Section>
+
+        {/* Fourth Line */}
+        <Section title="Form and indicator" className="col-span-full">
+          <HTNX
+            element="form"
+            className="flex flex-wrap items-center justify-center gap-4"
+            trigger="submit"
+            swap="innerHTML"
+            indicator={<Spinner />}
+            action={async e => await save(e)}>
+            <input
+              name="pass"
+              type="password"
+              placeholder={`Your "real" password:`}
+              className="lg:text-md h-16 w-64 rounded-xl border-2 border-slate-300 bg-slate-50 px-4 text-base lg:w-96 lg:text-xl"
+            />
+
+            <button type="submit" className={BASE_BUTTON}>
+              Send
+            </button>
+          </HTNX>
         </Section>
       </section>
+
+      <footer className="mt-32 flex flex-col items-center justify-center gap-4 px-4 text-sm text-slate-500">
+        <div className="inline">
+          <a
+            href="https://github.com/rafaelrcamargo/htnx"
+            target="_blank"
+            className="font-bold hover:underline">
+            htnx
+          </a>{" "}
+          a questionable project by{" "}
+          <a
+            href="https://twitter.com/rafaelrcamargo"
+            target="_blank"
+            className="font-bold hover:underline">
+            @rafaelrcamargo
+          </a>
+        </div>
+
+        <div className="flex flex-row items-center justify-start">
+          <a
+            href="https://github.com/rafaelrcamargo"
+            title="GitHub"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="[&_svg]:fill-primary px-2 duration-150 first:pl-0 last:pr-0 hover:scale-110 hover:drop-shadow-md [&_svg]:h-5 [&_svg]:w-5">
+            <svg
+              width="1em"
+              height="1em"
+              fill="currentColor"
+              viewBox="0 0 256 256">
+              <path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"></path>
+            </svg>
+          </a>
+          <a
+            href="https://instagram.com/rafaelrcmrg"
+            title="Instagram"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="[&_svg]:fill-primary px-2 duration-150 first:pl-0 last:pr-0 hover:scale-110 hover:drop-shadow-md [&_svg]:h-5 [&_svg]:w-5">
+            <svg
+              width="1em"
+              height="1em"
+              fill="currentColor"
+              viewBox="0 0 256 256">
+              <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"></path>
+            </svg>
+          </a>
+          <a
+            href="https://linkedin.com/in/rafaelrcamargo"
+            title="LinkedIn"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="[&_svg]:fill-primary px-2 duration-150 first:pl-0 last:pr-0 hover:scale-110 hover:drop-shadow-md [&_svg]:h-5 [&_svg]:w-5">
+            <svg
+              width="1em"
+              height="1em"
+              fill="currentColor"
+              viewBox="0 0 256 256">
+              <path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm0,192H40V40H216V216ZM96,112v64a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm88,28v36a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140ZM100,84A12,12,0,1,1,88,72,12,12,0,0,1,100,84Z"></path>
+            </svg>
+          </a>
+          <a
+            href="mailto:rafaelrakochinski@gmail.com"
+            title="Email"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="[&_svg]:fill-primary px-2 duration-150 first:pl-0 last:pr-0 hover:scale-110 hover:drop-shadow-md [&_svg]:h-5 [&_svg]:w-5">
+            <svg
+              width="1em"
+              height="1em"
+              fill="currentColor"
+              viewBox="0 0 256 256">
+              <path d="M128,24a104,104,0,0,0,0,208c21.51,0,44.1-6.48,60.43-17.33a8,8,0,0,0-8.86-13.33C166,210.38,146.21,216,128,216a88,88,0,1,1,88-88c0,26.45-10.88,32-20,32s-20-5.55-20-32V88a8,8,0,0,0-16,0v4.26a48,48,0,1,0,5.93,65.1c6,12,16.35,18.64,30.07,18.64,22.54,0,36-17.94,36-48A104.11,104.11,0,0,0,128,24Zm0,136a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path>
+            </svg>
+          </a>
+        </div>
+      </footer>
     </main>
   )
 }
 
-const Section: FC<PropsWithChildren<{ title?: string }>> = ({
-  children,
-  title
-}) => (
-  <section className="relative flex h-full min-h-64 flex-col items-center justify-center gap-8 rounded-xl border-2 border-slate-200 shadow-[0px_4px_8px_rgba(203,213,225,.2)] duration-75 hover:scale-[1.005] hover:shadow-[0px_4px_16px_rgba(203,213,225,.4)] md:flex-row">
-    <h2 className="border-slate200 absolute left-4 top-0 -translate-y-1/2 rounded-lg border-2 bg-slate-50 p-1 px-2 text-lg text-slate-500 shadow-[0px_2px_4px_rgba(203,213,225,.2)]">
+const Section: FC<
+  PropsWithChildren<{ title?: string; className?: string }>
+> = ({ children, title, className }) => (
+  <section
+    className={cn(
+      "relative flex h-full min-h-64 flex-col items-center justify-center gap-8 rounded-xl border-2 border-slate-200 bg-slate-50 p-8 shadow-[0px_4px_8px_rgba(203,213,225,.2)] duration-75 hover:scale-[1.005] hover:shadow-[0px_4px_16px_rgba(203,213,225,.4)] md:flex-row",
+      className
+    )}>
+    <h2 className="absolute left-4 top-0 z-20 -translate-y-1/2 rounded-lg border-2 border-slate-200 bg-slate-50 p-1 px-3 text-sm lg:text-lg">
       {title}
     </h2>
-    {children}
+    <div className="z-10 flex flex-wrap items-center justify-center gap-4 lg:gap-8">
+      {children}
+    </div>
 
-    <div className="pointer-events-none absolute -z-10 h-full w-full bg-[radial-gradient(rgba(203,213,225,.8)_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+    <div className="pointer-events-none absolute z-0 h-full w-full bg-[radial-gradient(rgba(203,213,225,.8)_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
   </section>
 )
 
-// --- HTNX ---
-
-type Swap = "outerHTML" | "innerHTML"
-type Trigger = "click" | "hover"
-
-type Props = FC<
-  ComponentProps<"button"> & {
-    action?: () => Promise<JSX.Element>
-    trigger?: Trigger
-    target?: RefObject<HTMLElement>
-    swap?: Swap
-    indicator?: string | JSX.Element
-  }
->
-
-const Button: Props = ({
-  children: CHILDREN,
-  trigger = "click",
-  swap,
-  target,
-  action,
-  indicator,
-  ...props
-}) => {
-  const [children, setChildren] = useState<JSX.Element>()
-  const [isPending, startTransition] = useTransition()
-
-  if (isPending && indicator)
-    return (
-      <button disabled {...props}>
-        {indicator}
-      </button>
-    )
-
-  if (!action) return <button {...props}>{CHILDREN}</button>
-
-  const actionFn = async () =>
-    startTransition(async () => setChildren(await action()))
-
-  const actionOn = {
-    click: { onClick: async () => await actionFn() },
-    hover: { onMouseEnter: async () => await actionFn() }
-  }[trigger]
-
-  if (target && swap) {
-    const doIt = async () => {
-      try {
-        return (target.current![swap] = renderToStaticMarkup(await action()))
-      } catch (error) {
-        toast.error("Target element not found!")
-      }
-    }
-
-    const actionOn = {
-      click: { onClick: doIt },
-      hover: { onMouseEnter: doIt }
-    }[trigger]
-
-    return (
-      <button {...actionOn} {...props}>
-        {CHILDREN}
-      </button>
-    )
-  }
-
-  if (!swap)
-    return (
-      <button {...actionOn} {...props}>
-        {CHILDREN}
-      </button>
-    )
-
-  if (swap === "outerHTML")
-    return (
-      children || (
-        <button {...actionOn} {...props}>
-          {CHILDREN}
-        </button>
-      )
-    )
-
-  return (
-    <button {...actionOn} {...props}>
-      {children || CHILDREN}
-    </button>
-  )
-}
-
-const HTNX = {
-  Button
-}
-
-const Spinner = () => (
-  <svg
-    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform"
-    width="44"
-    height="44"
-    viewBox="0 0 44 44"
-    stroke="rgb(51, 65, 85)">
-    <g fill="none" fill-rule="evenodd" stroke-width="2">
-      <circle cx="22" cy="22" r="1">
-        <animate
-          attributeName="r"
-          begin="0s"
-          dur="1.8s"
-          values="1; 20"
-          calcMode="spline"
-          keyTimes="0; 1"
-          keySplines="0.165, 0.84, 0.44, 1"
-          repeatCount="indefinite"
-        />
-        <animate
-          attributeName="stroke-opacity"
-          begin="0s"
-          dur="1.8s"
-          values="1; 0"
-          calcMode="spline"
-          keyTimes="0; 1"
-          keySplines="0.3, 0.61, 0.355, 1"
-          repeatCount="indefinite"
-        />
-      </circle>
-      <circle cx="22" cy="22" r="1">
-        <animate
-          attributeName="r"
-          begin="-0.9s"
-          dur="1.8s"
-          values="1; 20"
-          calcMode="spline"
-          keyTimes="0; 1"
-          keySplines="0.165, 0.84, 0.44, 1"
-          repeatCount="indefinite"
-        />
-        <animate
-          attributeName="stroke-opacity"
-          begin="-0.9s"
-          dur="1.8s"
-          values="1; 0"
-          calcMode="spline"
-          keyTimes="0; 1"
-          keySplines="0.3, 0.61, 0.355, 1"
-          repeatCount="indefinite"
-        />
-      </circle>
-    </g>
+const Heart = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 256 256" className={cn("h-12 w-12", className)}>
+    <path
+      d="M128,216S24,160,24,94A54,54,0,0,1,78,40c22.59,0,41.94,12.31,50,32,8.06-19.69,27.41-32,50-32a54,54,0,0,1,54,54C232,160,128,216,128,216Z"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="18"
+    />
   </svg>
 )
