@@ -15,7 +15,7 @@ export default function Home() {
 
   return (
     <main className="relative flex h-full flex-col items-center justify-center px-4 py-20 text-2xl font-medium lg:px-16 lg:py-32">
-      <h1 className="inline-flex items-center pb-20 lg:pb-32 text-5xl font-extrabold text-zinc-500 drop-shadow-md lg:pb-32 lg:text-8xl">
+      <h1 className="inline-flex items-center pb-24 text-5xl font-extrabold text-zinc-500 drop-shadow-md lg:pb-36 lg:text-8xl">
         <span className="mr-4 text-4xl lg:mr-8 lg:text-7xl">
           {"<"}
           <span className="text-black">{"/"}</span>
@@ -142,7 +142,7 @@ export default function Home() {
         </Section>
       </section>
 
-      <footer className="mt-20 lg:mt-32 flex flex-col items-center justify-center gap-4 px-4 text-sm text-slate-500">
+      <footer className="mt-20 flex flex-col items-center justify-center gap-4 px-4 text-sm text-slate-500 lg:mt-32">
         <div className="inline">
           <a
             href="https://github.com/rafaelrcamargo/htnx"
