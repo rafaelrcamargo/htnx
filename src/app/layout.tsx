@@ -7,6 +7,7 @@ import { GeistSans } from "geist/font/sans"
 import { cn } from "@/lib/utils"
 
 import "@/styles/globals.css"
+import { Metadata } from "next"
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -28,3 +29,38 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
 }
 
 export default Layout
+
+const base = {
+  url: "https://htnx.cmrg.me",
+  title: "htnx - a htmx-like experience in Next.js (seriously)",
+  description:
+    "a htmx-like experience in Next.js with React Server Actions and quite a bit of questionable code."
+}
+
+export const metadata: Metadata = {
+  title: base.title,
+  description: base.description,
+  metadataBase: new URL(base.url),
+  icons: { shortcut: "/favicon.ico" },
+  robots: { index: true, follow: true },
+  authors: [
+    { name: "Rafael R. Camargo", url: "https://github.com/rafaelrcamargo" }
+  ],
+  openGraph: {
+    url: base.url,
+    locale: "en_US",
+    title: base.title,
+    siteName: base.title,
+    description: base.description,
+    images: [{ url: "/og.webp" }],
+    type: "website"
+  },
+  twitter: {
+    site: base.url,
+    title: base.title,
+    images: [{ url: "/og.webp" }],
+    description: base.description,
+    card: "summary_large_image",
+    creator: "@rafaelrcamargo"
+  }
+}
