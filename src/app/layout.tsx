@@ -1,5 +1,6 @@
 import { FC, PropsWithChildren } from "react"
 
+import { Analytics } from "@vercel/analytics/react"
 import { GeistMono } from "geist/font/mono"
 import { GeistSans } from "geist/font/sans"
 
@@ -19,6 +20,8 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
         {children}
 
         <div className="overlay pointer-events-none z-20" />
+
+        <Analytics />
       </body>
     </html>
   )

@@ -10,6 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.1.2",
     "next": "canary",
     "react": "^18",
     "react-dom": "^18"
